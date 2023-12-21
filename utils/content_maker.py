@@ -1,3 +1,4 @@
+import json
 import requests
 from bs4 import BeautifulSoup
 from utils.file import saveFile
@@ -5,12 +6,12 @@ from utils.utils import remove_accents
 
 
 class ContentGenerator:
-  def getType(x):
-    if x.name == 'p':
-      return 'p'
-    if x.name == 'div' and x.attrs['type'] == 'Photo':
-      return 'photo'
-    return 'others'
+  # def getType(x):
+  #   if x.name == 'p':
+  #     return 'p'
+  #   if x.name == 'div' and x.attrs['type'] == 'Photo':
+  #     return 'photo'
+  #   return 'others'
 
   def handleText(text: str):
     return text.replace('\"', '').replace(u'\xa0', u' ')
@@ -35,8 +36,8 @@ class ContentGenerator:
 
     entryBody = content.select_one('#entry-body')
 
-    orders = list(map(ContentGenerator.getType, entryBody))
-    jsonData['orders'] = orders
+    # orders = list(map(ContentGenerator.getType, entryBody))
+    # jsonData['orders'] = orders
 
     texts = list(map(lambda x: ContentGenerator.handleText(
         x.text), entryBody.select('p')))
@@ -46,6 +47,6 @@ class ContentGenerator:
     jsonData['images'] = images
 
     fileName = remove_accents(title.replace(' ', '-').lower())
-    saveFile(str(jsonData), name=(fileName, fileName + '.json'))
+    saveFile(json.dumps(jsonData), name=(fileName, fileName + '.json'))
 
     return fileName

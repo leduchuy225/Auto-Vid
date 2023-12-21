@@ -6,7 +6,6 @@ apiKey = '0ZGJgMClDttHIicFtiic1N9JZc8ZyQsF'
 
 
 class VoiceGenerator:
-
   def getVoice(payload: str):
     data = payload.encode('utf-8')
     headers = {

@@ -5,8 +5,10 @@ def generateVideo(audio, images, videoName='video.mp4'):
   # Import the audio(Insert to location of your audio instead of audioClip.mp3)
   audioFile = mp.AudioFileClip(audio)
   # Import the Image and set its duration same as the audio (Insert the location of your photo instead of photo.jpg)
-  imageFiles = list(map(lambda image: mp.ImageClip(
-      image).set_duration(audioFile.duration/len(images)), images))
+
+  durationTime = audioFile.duration/len(images)
+
+  imageFiles = [mp.ImageClip(m).set_duration(durationTime) for m in images]
 
   clip = mp.concatenate_videoclips(imageFiles, method='compose')
 
