@@ -19,6 +19,12 @@ class ContentGenerator:
   def handleText(text: str):
     return text.replace('\"', '').replace(u'\xa0', u' ')
 
+  def getContentFromVTVShortsNews(url: str):
+    response = requests.request('GET', url)
+
+    soup = BeautifulSoup(response.content)
+    pass
+
   def getContentFromVTVNews(url: str):
     response = requests.request('GET', url)
 

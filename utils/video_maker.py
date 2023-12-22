@@ -3,7 +3,7 @@ from moviepy.video.tools.subtitles import SubtitlesClip
 
 
 class VideoGenerator:
-  def generateVideo(audio, images, texts: str, videoName='video.mp4'):
+  def generateVideo(audio, images, texts: str, textNote: str, videoName='video.mp4'):
     # Import the audio(Insert to location of your audio instead of audioClip.mp3)
     audioFile = mp.AudioFileClip(audio)
     # Import the Image and set its duration same as the audio (Insert the location of your photo instead of photo.jpg)
@@ -18,21 +18,15 @@ class VideoGenerator:
     clip = clip.set_audio(audioFile)
 
     if texts != None:
-      pass
+      subtitleClip = SubtitlesClip(
+          VideoGenerator.generateSubtitle(texts, audioFile.duration)).set_pos(('center', 'bottom'))
+      clip = mp.CompositeVideoClip([clip, subtitleClip])
 
-    # def generator(txt): return mp.TextClip(
-    #     txt, font='Arial', fontsize=24, color='white')
+    if textNote != None:
+      textNoteClip = SubtitlesClip(
+          [((0, audioFile.duration), textNote)]).set_pos(('center', 'up'))
+      clip = mp.CompositeVideoClip([clip, textNoteClip])
 
-    # subs = [((0, 4), 'subs1'),
-    #         ((4, 9), 'subs2'),
-    #         ((9, 12), 'subs3'),
-    #         ((12, 16), 'subs4')]
-
-    # subtitles = SubtitlesClip(subs).set_pos(('center', 'bottom'))
-
-    # clip = mp.CompositeVideoClip([clip, subtitles])
-
-    # Export the clip
     clip.write_videofile(videoName, fps=24)
 
   def combineMp4Video(videos: list,  videoName='video_combine.mp4'):
@@ -42,15 +36,22 @@ class VideoGenerator:
 
   def generateSubtitle(texts: str, duration: float):
     countWord = 0
+    subtitles = []
+    currentTime = 0
     textSplitByDot = [text.strip()
                       for text in texts.replace('...', '.').split('.')]
     for sentence in textSplitByDot:
-      print(sentence)
-      print(len(sentence.split(' ')))
-
       countWord += len(sentence.split(' '))
 
-    print(countWord)
+    secondPerWord = countWord / duration
+
+    for sentence in textSplitByDot:
+      countWordPerSentence = len(sentence.split(' '))
+      subtitles.append(
+          ((currentTime, currentTime + secondPerWord * countWordPerSentence), sentence))
+      currentTime += secondPerWord * countWordPerSentence
+
+    return subtitles
 
 
 # Xuất hiện trên sân khấu lễ trao giải VinFuture, Katy Perry đã trình diễn hai bài hát gắn liền với tên tuổi của cô là Unconditionally và Roar
@@ -92,3 +93,6 @@ class VideoGenerator:
 # * Mời quý độc giả theo dõi các chương trình đã phát sóng của Đài Truyền hình Việt Nam trên TV Online và VTVGo!
 # 24
 # 524
+
+
+# 0.27s per words
