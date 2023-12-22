@@ -1,12 +1,15 @@
 import requests
 
-voice = 'banmai'
-url = 'https://api.fpt.ai/hmi/tts/v5'
-apiKey = '0ZGJgMClDttHIicFtiic1N9JZc8ZyQsF'
-
 
 class VoiceGenerator:
   def getVoice(payload: str):
+    return VoiceGenerator.getFPTAIVoice(payload)
+
+  def getFPTAIVoice(payload: str):
+    voice = 'banmai'
+    url = 'https://api.fpt.ai/hmi/tts/v5'
+    apiKey = '0ZGJgMClDttHIicFtiic1N9JZc8ZyQsF'
+
     data = payload.encode('utf-8')
     headers = {
         'speed': '',

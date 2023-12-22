@@ -3,7 +3,7 @@ import json
 import os
 import requests
 from pathlib import Path
-from os.path import isfile, join
+from os.path import isfile
 
 
 def getPath(name: tuple):
