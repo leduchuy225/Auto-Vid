@@ -18,17 +18,14 @@ if __name__ == "__main__":
   fileData = f.readFile(f.getPath((fileName, fileName + '.json')))
 
   content = ''.join(fileData["texts"])
-  VideoGenerator.generateSubtitle(content, None)
-  # images = f.downloadMultipleFiles(fileData["images"], folder=(fileName))
+  # VideoGenerator.generateSubtitle(
+  #     content, 139).write_videofile('ahihi.mp4', fps=24)
+  images = f.downloadMultipleFiles(fileData["images"], folder=(fileName))
 
   # # print('Content', content)
   # # print('Images', images)
 
-  # audioPath = f.getExistFileType(fileName, 'mp3')
-  # if audioPath == None:
-  #   print('Generate audio')
-  #   response = VoiceGenerator.getVoice(payload=content)
-  #   audioPathTuple = (fileName, f'{response["request_id"]}.mp3')
-  #   audioPath = f.downloadFile(response["async"], name=audioPathTuple)
+  audioPath = VoiceGenerator.getVoice(payload=content, fileName=fileName)
 
-  # VideoGenerator.generateVideo(audioPath, images, f.getPath((fileName, f'{fileName}.mp4')))
+  VideoGenerator.generateVideo(
+      audio=audioPath, images=images, videoName=f.getPath((fileName, f'{fileName}.mp4')), texts=content, textNote=fileName)
