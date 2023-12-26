@@ -1,3 +1,4 @@
+import time
 import requests
 import utils.file as f
 
@@ -28,6 +29,11 @@ class VoiceGenerator:
     response = response.json()
 
     audioPathTuple = (fileName, f'{response["request_id"]}.mp3')
+
+    print(audioPathTuple)
+
+    time.sleep(5)
+
     audioPath = f.downloadFile(response["async"], name=audioPathTuple)
 
     return audioPath

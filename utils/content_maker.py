@@ -6,13 +6,6 @@ from utils.utils import remove_accents
 
 
 class ContentGenerator:
-  # def getType(x):
-  #   if x.name == 'p':
-  #     return 'p'
-  #   if x.name == 'div' and x.attrs['type'] == 'Photo':
-  #     return 'photo'
-  #   return 'others'
-
   def getContent(url: str):
     return ContentGenerator.getContentFromVTVNews(url)
 
@@ -22,13 +15,13 @@ class ContentGenerator:
   def getContentFromVTVShortsNews(url: str):
     response = requests.request('GET', url)
 
-    soup = BeautifulSoup(response.content)
+    soup = BeautifulSoup(response.content, features="html.parser")
     pass
 
   def getContentFromVTVNews(url: str):
     response = requests.request('GET', url)
 
-    soup = BeautifulSoup(response.content)
+    soup = BeautifulSoup(response.content, features="html.parser")
 
     catagory = soup.select_one('div.adm-mainsection p.tenmuc').text
 
@@ -43,9 +36,10 @@ class ContentGenerator:
     texts = list(map(lambda x: ContentGenerator.handleText(
         x.text), entryBody.select('p')))
 
-    images = list(map(lambda x: x.attrs['src'], entryBody.select('img')))
+    images = list(map(lambda x: x.attrs['src'], content.select('img')))
 
-    fileName = remove_accents(title.replace(' ', '-').lower())
+    fileName = remove_accents(
+        ''.join([i for i in title if i.isalpha() or i == ' ']).replace(' ', '-').lower())
 
     data = DataModel(id=fileName, url=url, catagory=catagory, images=images,
                      author=author, texts=texts, title=title)
