@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from models.data_model import DataModel
 from utils.file import saveFile
 from utils.utils import remove_accents
+from datetime import date
 
 
 class ContentGenerator:
@@ -19,11 +20,29 @@ class ContentGenerator:
   def joinContent(fileData: DataModel):
     return fileData.title + '.' + ' '.join(fileData.texts)
 
-  # def getContentFromVTVShortsNews(url: str):
-  #   response = requests.request('GET', url)
+  def getContentFromVTVShortsNews(url: str):
+    response = requests.request('GET', url)
+    today = date.today()
 
-  #   soup = BeautifulSoup(response.content, features="html.parser")
-  #   pass
+    soup = BeautifulSoup(response.content, features="html.parser")
+    newsList = soup.select_one('div.list_news')
+    itemList = newsList.select('li.tlitem')
+
+    for item in itemList:
+      if item.select_one('li > p.sapo') == None:
+        continue
+
+      text = item.select_one('li > p.sapo').text
+      title = item.select_one('li > h3 > a').text
+      catagory = item.select_one('li > p.time > a').text
+      image = item.select_one('li > a > img').attrs['src']
+
+      data = DataModel(id=title, title=title, author='',
+                       catagory=catagory, images=[image], texts=[text], url='')
+
+      fileName = ContentGenerator.getName(title)
+
+      saveFile(data.toJson(), name=(str(today), fileName, fileName + '.json'))
 
   def getContentFromVTVNews(url: str):
     response = requests.request('GET', url)

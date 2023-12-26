@@ -26,6 +26,7 @@ class DataModel:
                      catagory=json["catagory"]
                      )
 
-  def fromFileName(fileName: str):
-    fileData = f.readFile(f.getPath((fileName, fileName + '.json')))
+  def fromFileName(fileName: str, folder: str = ''):
+    fileData = f.readFile(
+        f.getPath((folder, fileName, fileName + '.json')))
     return DataModel.fromJson(fileData)

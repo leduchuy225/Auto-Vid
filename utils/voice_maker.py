@@ -32,7 +32,7 @@ class VoiceGenerator:
 
     print(audioPathTuple)
 
-    time.sleep(5)
+    time.sleep(10)
 
     audioPath = f.downloadFile(response["async"], name=audioPathTuple)
 

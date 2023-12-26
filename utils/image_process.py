@@ -20,21 +20,20 @@ class ImageProcess:
 
     return im
 
-  def preProcess(images: list[str], ratio: tuple):
-    maxWidth = 0
-
+  def preProcess(images: list[str], ratio: tuple, width=0):
     for image in images:
       im = ImageProcess.handle_image(image, ratio)
       im.save(image)
 
-    for image in images:
-      im = Image.open(image)
-      x, y = im.size
-      maxWidth = x if x > maxWidth else maxWidth
+    if width == 0:
+      for image in images:
+        im = Image.open(image)
+        x, y = im.size
+        width = x if x > width else width
 
     for image in images:
       im = Image.open(image)
-      im = im.resize((maxWidth, int((maxWidth/ratio[0]) * ratio[1])))
+      im = im.resize((width, int((width/ratio[0]) * ratio[1])))
       im.save(image)
 
     return images

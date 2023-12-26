@@ -5,7 +5,7 @@ from moviepy.video.tools.subtitles import SubtitlesClip
 
 
 class VideoGenerator:
-  def generateVideo(audio, images: list[str], texts: str, textNote: str,  videoName='video.mp4'):
+  def generateVideo(audio, images: list[str], texts: str, header: str,  videoName='video.mp4'):
     # Import the audio(Insert to location of your audio instead of audioClip.mp3)
     audioFile = mp.AudioFileClip(audio)
     # Import the Image and set its duration same as the audio (Insert the location of your photo instead of photo.jpg)
@@ -23,13 +23,17 @@ class VideoGenerator:
     if texts != None:
       subtitleClip = SubtitlesClip(
           VideoGenerator.generateSubtitle(texts, audioFile.duration),
-          lambda txt: mp.TextClip(txt, font='SVN-Arial-Regular',
-                                  color='white', size=clip.size, method='caption', fontsize='26'),
+          lambda txt: mp.TextClip(txt, font='JetBrains-Mono-Regular',
+                                  color='white', size=clip.size, method='caption', fontsize=26, align='South'),
       )
       clip = mp.CompositeVideoClip([clip, subtitleClip])
 
-    clip = clip.set_audio(audioFile)
+    if header != None:
+      headerClip = mp.TextClip(header, font='JetBrains-Mono-Regular',
+                               color='white', size=clip.size, fontsize=28, align='North').set_duration(audioFile.duration)
+      clip = mp.CompositeVideoClip([clip, headerClip])
 
+    clip = clip.set_audio(audioFile)
     clip.write_videofile(videoName, fps=24)
 
   def combineMp4Video(videos: list,  videoName='video_combine.mp4'):
