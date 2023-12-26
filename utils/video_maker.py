@@ -1,36 +1,33 @@
+import os
+from pathlib import Path
 import moviepy.editor as mp
-from moviepy.video.fx.resize import resize
 from moviepy.video.tools.subtitles import SubtitlesClip
 
 
 class VideoGenerator:
-  def generateVideo(audio, images, texts: str, textNote: str,  videoName='video.mp4'):
+  def generateVideo(audio, images: list[str], texts: str, textNote: str,  videoName='video.mp4'):
     # Import the audio(Insert to location of your audio instead of audioClip.mp3)
     audioFile = mp.AudioFileClip(audio)
     # Import the Image and set its duration same as the audio (Insert the location of your photo instead of photo.jpg)
 
-    clip = mp.ColorClip(size=(1080, 1920), duration=audioFile.duration)
+    if len(images) == 0:
+      images.append(os.path.join(Path.cwd(), 'default.jpg'))
 
-    if len(images) > 0:
-      durationTime = (audioFile.duration/len(images))
-      imageFiles = [mp.ImageClip(m).set_duration(durationTime) for m in images]
-      clip = mp.concatenate_videoclips(imageFiles, method='compose')
+    durationTime = (audioFile.duration/len(images))
+    imageFiles = [mp.ImageClip(m).set_duration(durationTime) for m in images]
+
+    clip = mp.concatenate_videoclips(imageFiles, method='compose')
+
+    print(clip.size)
 
     if texts != None:
       subtitleClip = SubtitlesClip(
           VideoGenerator.generateSubtitle(texts, audioFile.duration),
           lambda txt: mp.TextClip(txt, font='SVN-Arial-Regular',
-                                  color='white', size=clip.size, align='South', method='caption'),
+                                  color='white', size=clip.size, method='caption', fontsize='26'),
       )
       clip = mp.CompositeVideoClip([clip, subtitleClip])
 
-    # if textNote != None:
-    #   textNoteClip = SubtitlesClip(
-    #       [((0, audioFile.duration), textNote)]
-    #   ).set_pos(('center'))
-    #   clip = mp.CompositeVideoClip([clip, textNoteClip])
-
-    # Set the audio of the clip
     clip = clip.set_audio(audioFile)
 
     clip.write_videofile(videoName, fps=24)

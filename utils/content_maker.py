@@ -12,11 +12,18 @@ class ContentGenerator:
   def handleText(text: str):
     return text.replace('\"', '').replace(u'\xa0', u' ')
 
-  def getContentFromVTVShortsNews(url: str):
-    response = requests.request('GET', url)
+  def getName(data: str):
+    return remove_accents(
+        ''.join([i for i in data if i.isalpha()]).lower())
 
-    soup = BeautifulSoup(response.content, features="html.parser")
-    pass
+  def joinContent(fileData: DataModel):
+    return fileData.title + '.' + ' '.join(fileData.texts)
+
+  # def getContentFromVTVShortsNews(url: str):
+  #   response = requests.request('GET', url)
+
+  #   soup = BeautifulSoup(response.content, features="html.parser")
+  #   pass
 
   def getContentFromVTVNews(url: str):
     response = requests.request('GET', url)
@@ -38,8 +45,7 @@ class ContentGenerator:
 
     images = list(map(lambda x: x.attrs['src'], content.select('img')))
 
-    fileName = remove_accents(
-        ''.join([i for i in title if i.isalpha() or i == ' ']).replace(' ', '-').lower())
+    fileName = ContentGenerator.getName(title)
 
     data = DataModel(id=fileName, url=url, catagory=catagory, images=images,
                      author=author, texts=texts, title=title)

@@ -1,3 +1,4 @@
+from models.data_model import DataModel
 from utils.content_maker import ContentGenerator
 from utils.image_process import ImageProcess
 from utils.video_maker import VideoGenerator
@@ -11,10 +12,10 @@ if __name__ == "__main__":
 
   print('FileName', fileName)
 
-  fileData = f.readFile(f.getPath((fileName, fileName + '.json')))
+  fileData: DataModel = DataModel.fromFileName(fileName)
 
-  content = fileData["title"] + '.' + ' '.join(fileData["texts"])
-  images = f.downloadMultipleFiles(fileData["images"], folder=(fileName))
+  content = ContentGenerator.joinContent(fileData)
+  images = f.downloadMultipleFiles(fileData.images, folder=(fileName))
 
   images = ImageProcess.preProcess(images, (9, 16))
 

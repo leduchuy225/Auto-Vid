@@ -1,5 +1,6 @@
 import json
 from typing import List
+import utils.file as f
 
 
 class DataModel:
@@ -14,3 +15,17 @@ class DataModel:
 
   def toJson(self):
     return json.dumps(self.__dict__)
+
+  def fromJson(json):
+    return DataModel(id=json["id"],
+                     url=json["url"],
+                     title=json["title"],
+                     texts=json["texts"],
+                     author=json["author"],
+                     images=json["images"],
+                     catagory=json["catagory"]
+                     )
+
+  def fromFileName(fileName: str):
+    fileData = f.readFile(f.getPath((fileName, fileName + '.json')))
+    return DataModel.fromJson(fileData)
